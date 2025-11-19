@@ -1,0 +1,9 @@
+../Core/Src/SGP40.c:29:13:convRHTtoTicks	7
+../Core/Src/SGP40.c:17:16:sensirion_crc8.constprop	5
+../Core/Src/SGP40.c:50:19:SGP40_ReadRawComp	7
+../Core/Src/SGP40.c:89:19:SGP40_ReadRawComp_HeaterOn	11
+../Core/Src/SGP40.c:191:6:SGP40_VOC_Init	2
+../Core/Src/SGP40.c:201:19:SGP40_VOC_ContStart	4
+../Core/Src/SGP40.c:213:6:SGP40_VOC_ContStop	1
+../Core/Src/SGP40.c:219:19:SGP40_VOC_ContStep	10
+../Core/Src/SGP40.c:227:19:SGP40_MeasureOnce	8

@@ -1,0 +1,10 @@
+../Core/Src/gpio_sleep.c:8:6:GPIO_Sleep_SetKeepPins	1
+../Core/Src/gpio_sleep.c:14:6:GPIO_EnableAllClocks	1
+../Core/Src/gpio_sleep.c:24:10:build_keep_mask	7
+../Core/Src/gpio_sleep.c:39:6:port_to_analog_except	3
+../Core/Src/gpio_sleep.c:54:6:GPIO_PrepareForSleep_Simple	1
+../Core/Src/gpio_sleep.c:72:6:GPIO_RestoreAfterWake_Simple	1
+../Core/Src/gpio_sleep.c:100:5:GPIO_IsKeep	4
+../Core/Src/gpio_sleep.c:85:20:GPIO_InitIfNotKeep.constprop	2
+../Core/Src/gpio_sleep.c:77:20:GPIO_WriteIfNotKeep.constprop	2
+../Core/Src/gpio_sleep.c:109:6:MX_GPIO_ReInit_Except	1

@@ -1,0 +1,203 @@
+
+matter_dashboard:
+  views:
+    - type: sections
+      max_columns: 4
+      title: Matter
+      path: matter
+      icon: mdi:desk-lamp
+      subview: false
+      top_margin: false
+      sections:
+        - type: grid
+          cards:
+            - clock_style: digital
+              clock_size: small
+              time_format: '24'
+              show_seconds: true
+              no_background: false
+              type: clock
+              grid_options:
+                columns: 6
+                rows: 1
+              face_style: markers
+            - type: tile
+              entity: media_player.nesthub08b4_2
+              vertical: false
+              features_position: bottom
+              grid_options:
+                columns: 6
+                rows: 1
+            - graph: line
+              type: sensor
+              entity: sensor.test_product_temperature
+              detail: 1
+            - graph: line
+              type: sensor
+              entity: sensor.test_product_humidity
+              detail: 1
+            - type: gauge
+              entity: sensor.test_product_carbon_dioxide
+              min: 350
+              max: 2500
+              needle: true
+              severity:
+                green: 0
+                yellow: 1000
+                red: 1500
+            - type: tile
+              entity: sensor.test_product_air_quality
+            - type: tile
+              entity: sensor.test_product_humidity
+            - type: tile
+              entity: sensor.test_product_temperature
+            - type: tile
+              entity: sensor.test_product_carbon_dioxide
+            - type: tile
+              entity: binary_sensor.test_product_battery_5
+            - type: tile
+              entity: sensor.test_product_battery_voltage_5
+            - type: tile
+              entity: binary_sensor.test_product_battery_6
+            - type: tile
+              entity: sensor.test_product_battery_voltage_6
+            - type: tile
+              entity: sensor.test_product_battery_charge_state
+              vertical: false
+              features_position: bottom
+              grid_options:
+                columns: 12
+                rows: 1
+            - type: history-graph
+              entities:
+                - entity: sensor.test_product_battery_charge_state
+              hours_to_show: 1
+        - type: grid
+          cards:
+            - type: iframe
+              url: >-
+                https://your-grafana-host.example.com/d-solo/e804cadf-f0df-44bb-a153-3382806477e9/locusense?orgId=1&panelId=1&from=now-1h&to=now&refresh=30s&kiosk=tv
+              aspect_ratio: 45%
+              card_mod:
+                style: |
+                  :host {
+                    --ha-card-background: transparent;
+                  }
+                  ha-card {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                  }
+                  ha-card > div,
+                  ha-card .card-content,
+                  ha-card iframe {
+                    background: transparent !important;
+                  }
+            - type: custom:addon-iframe-card
+              url: >-
+                https://your-grafana-host.example.com/d-solo/e804cadf-f0df-44bb-a153-3382806477e9/locusense?orgId=1&panelId=2&from=now-1h&to=now&refresh=30s&kiosk=tv
+              aspect_ratio: 45%
+            - type: custom:addon-iframe-card
+              url: >-
+                https://your-grafana-host.example.com/d-solo/e804cadf-f0df-44bb-a153-3382806477e9/locusense?orgId=1&panelId=3&from=now-1h&to=now&refresh=30s&kiosk=tv
+              aspect_ratio: 45%
+      header:
+        card:
+          type: markdown
+          content: |-
+            # Matter/Thread Dashboard
+            IoT environmental node ✨
+          text_only: true
+      badges:
+        - type: entity
+          show_name: false
+          show_state: true
+          show_icon: true
+          entity: sensor.test_product_carbon_dioxide
+        - type: entity
+          show_name: false
+          show_state: true
+          show_icon: true
+          entity: sensor.test_product_temperature
+        - type: entity
+          show_name: false
+          show_state: true
+          show_icon: true
+          entity: sensor.test_product_humidity
+        - type: entity
+          show_name: false
+          show_state: true
+          show_icon: true
+          entity: sensor.test_product_air_quality
+      cards: []
+      theme: ios-dark-mode-blue-red
+
+    - type: sections
+      max_columns: 4
+      title: Lora
+      path: lora
+      icon: mdi:router-wireless-settings
+      subview: false
+      top_margin: false
+      sections:
+        - type: grid
+          cards:
+            - clock_style: digital
+              clock_size: small
+              time_format: '24'
+              show_seconds: true
+              no_background: false
+              type: clock
+              grid_options:
+                columns: 12
+                rows: 1
+              face_style: markers
+            - graph: line
+              type: sensor
+              entity: sensor.sensor_lora_temperature
+              detail: 1
+            - graph: line
+              type: sensor
+              entity: sensor.sensor_lora_humidity
+              detail: 1
+            - type: gauge
+              entity: sensor.sensor_lora_co2
+              min: 350
+              max: 2500
+              needle: true
+              severity:
+                green: 0
+                yellow: 1000
+                red: 1500
+            - type: tile
+              entity: sensor.sensor_lora_frequency
+            - type: tile
+              entity: sensor.sensor_lora_snr
+            - type: tile
+              entity: sensor.sensor_lora_rssi
+            - type: tile
+              entity: sensor.sensor_lora_gateway_id
+      header:
+        card:
+          type: markdown
+          content: |-
+            # LoRa Dashboard
+            IoT environmental node ✨
+          text_only: true
+      badges:
+        - type: entity
+          show_name: false
+          show_state: true
+          show_icon: true
+          entity: sensor.sensor_lora_co2
+        - type: entity
+          show_name: false
+          show_state: true
+          show_icon: true
+          entity: sensor.sensor_lora_temperature
+        - type: entity
+          show_name: false
+          show_state: true
+          show_icon: true
+          entity: sensor.sensor_lora_humidity
+      cards: []
+      theme: ios-dark-mode-blue-red

@@ -1,0 +1,4 @@
+../Core/Src/button_handler.c:20:6:ButtonHandler_Init	1
+../Core/Src/button_handler.c:38:6:ButtonHandler_BootCapture	2
+../Core/Src/button_handler.c:49:9:IsButtonReleased	1
+../Core/Src/button_handler.c:55:6:ButtonHandler_EXTI_Callback	7

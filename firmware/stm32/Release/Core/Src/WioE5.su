@@ -1,0 +1,12 @@
+../Core/Src/WioE5.c:37:5:Wio_IsHexLen.part.0	16	static
+../Core/Src/WioE5.c:37:5:Wio_IsHexLen	8	static
+../Core/Src/WioE5.c:49:9:Wio_SendCommand	176	static
+../Core/Src/WioE5.c:94:9:Wio_Init_OTAA	120	static
+../Core/Src/WioE5.c:144:17:Wio_SendData	168	static
+../Core/Src/WioE5.c:165:23:Wio_SendData_Unconfirmed	168	static
+../Core/Src/WioE5.c:198:9:Wio_ParseTimeDownlink	24	static
+../Core/Src/WioE5.c:189:9:WioTimeReq	8	static
+../Core/Src/WioE5.c:221:9:Wio_EnsureReady	16	static
+../Core/Src/WioE5.c:136:9:Wio_JoinNow	8	static
+../Core/Src/WioE5.c:232:6:Wio_SleepEnter	8	static
+../Core/Src/WioE5.c:239:9:Wio_Wake	8	static

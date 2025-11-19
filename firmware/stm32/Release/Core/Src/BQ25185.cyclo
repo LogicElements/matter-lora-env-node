@@ -1,0 +1,4 @@
+../Core/Src/BQ25185.c:39:18:BQ25185_GetStatus	6
+../Core/Src/BQ25185.c:75:13:BQ25185_StatusToString	2
+../Core/Src/BQ25185.c:92:6:BQ25185_PrintStatus	1
+../Core/Src/BQ25185.c:102:6:BQ25185_GPIO_Config	2

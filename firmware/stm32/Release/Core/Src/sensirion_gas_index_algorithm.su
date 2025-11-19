@@ -1,0 +1,11 @@
+../Core/Src/sensirion_gas_index_algorithm.c:116:13:GasIndexAlgorithm__init_instances	40	static
+../Core/Src/sensirion_gas_index_algorithm.c:455:14:GasIndexAlgorithm__mean_variance_estimator___sigmoid__process	8	static
+../Core/Src/sensirion_gas_index_algorithm.c:109:6:GasIndexAlgorithm_reset	8	static
+../Core/Src/sensirion_gas_index_algorithm.c:72:6:GasIndexAlgorithm_init_with_sampling_interval	24	static
+../Core/Src/sensirion_gas_index_algorithm.c:103:6:GasIndexAlgorithm_init	8	static
+../Core/Src/sensirion_gas_index_algorithm.c:136:6:GasIndexAlgorithm_get_sampling_interval	0	static
+../Core/Src/sensirion_gas_index_algorithm.c:141:6:GasIndexAlgorithm_get_states	16	static
+../Core/Src/sensirion_gas_index_algorithm.c:149:6:GasIndexAlgorithm_set_states	16	static
+../Core/Src/sensirion_gas_index_algorithm.c:160:6:GasIndexAlgorithm_set_tuning_parameters	16	static
+../Core/Src/sensirion_gas_index_algorithm.c:176:6:GasIndexAlgorithm_get_tuning_parameters	24	static
+../Core/Src/sensirion_gas_index_algorithm.c:192:6:GasIndexAlgorithm_process	64	static

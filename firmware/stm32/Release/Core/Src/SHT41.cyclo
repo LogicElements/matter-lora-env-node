@@ -1,0 +1,4 @@
+../Core/Src/SHT41.c:18:6:SHTSoftReset	1
+../Core/Src/SHT41.c:12:6:SHTInit	1
+../Core/Src/SHT41.c:50:9:SHT41_CheckCRC	5
+../Core/Src/SHT41.c:25:6:SHTMeasure	3

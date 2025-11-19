@@ -1,0 +1,785 @@
+[
+    {
+        "id": "3232bf3ba91928b6",
+        "type": "tab",
+        "label": "LoRa → TTN → HA example",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9a0e18a9d74b0b82",
+        "type": "mqtt in",
+        "z": "3232bf3ba91928b6",
+        "name": "TTN raw (all topics)",
+        "topic": "#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "378ea1d880239fa9",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 120,
+        "wires": [
+            [
+                "7453e6645f969732"
+            ]
+        ]
+    },
+    {
+        "id": "7453e6645f969732",
+        "type": "debug",
+        "z": "3232bf3ba91928b6",
+        "name": "Debug TTN raw",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "93ff7253f96e23e1",
+        "type": "mqtt in",
+        "z": "3232bf3ba91928b6",
+        "name": "TTN uplinks (decoded)",
+        "topic": "v3/YOUR_APP_ID@ttn/devices/+/up",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "378ea1d880239fa9",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 240,
+        "y": 260,
+        "wires": [
+            [
+                "4e5c10e0d3d2a447"
+            ]
+        ]
+    },
+    {
+        "id": "4e5c10e0d3d2a447",
+        "type": "function",
+        "z": "3232bf3ba91928b6",
+        "name": "Create timestamp downlink (TTN time sync)",
+        "func": "const payload = msg.payload.uplink_message.frm_payload;\n\nif (payload === \"EQ==\") {\n    const device_id = msg.payload.end_device_ids.device_id;\n    const app_id = msg.payload.end_device_ids.application_ids.application_id;\n\n    let timestamp = Math.floor(Date.now() / 1000);\n\n    node.warn(\"UNIX timestamp: \" + timestamp);\n    node.warn(\"ISO time: \" + new Date(timestamp * 1000).toISOString());\n\n    const buffer = Buffer.alloc(4);\n    buffer.writeUInt32BE(timestamp, 0);\n\n    const base64_payload = buffer.toString('base64');\n\n    msg.topic = `v3/${app_id}/devices/${device_id}/down/replace`;\n    msg.payload = {\n        downlinks: [\n            {\n                f_port: 8,\n                frm_payload: base64_payload,\n                priority: \"NORMAL\"\n            }\n        ]\n    };\n    return msg;\n} else {\n    return null;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 260,
+        "wires": [
+            [
+                "4b0642aced49708f",
+                "19e49c6420019681"
+            ]
+        ]
+    },
+    {
+        "id": "4b0642aced49708f",
+        "type": "mqtt out",
+        "z": "3232bf3ba91928b6",
+        "name": "TTN downlink (example device)",
+        "topic": "v3/YOUR_APP_ID@ttn/devices/YOUR_DEVICE_ID/down/replace",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "378ea1d880239fa9",
+        "x": 940,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "19e49c6420019681",
+        "type": "debug",
+        "z": "3232bf3ba91928b6",
+        "name": "Debug downlink",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "db6af3d8cd89b5c5",
+        "type": "function",
+        "z": "3232bf3ba91928b6",
+        "name": "Parse TTN JSON → HA sensor payload",
+        "func": "// Helper: assign only if defined\nfunction setIfDefined(target, key, value) {\n    if (value !== undefined && value !== null) target[key] = value;\n}\n\n// Previous state\nconst prev = context.get('state') || {};\nlet next = { ...prev };\n\nlet input = msg.payload;\nif (typeof input === 'string') {\n    try {\n        input = JSON.parse(input);\n    } catch (e) {\n        node.error(\"Payload is not valid JSON: \" + e.message);\n        return null;\n    }\n}\n\nif (input && input.uplink_message) {\n    // TTN v3 uplink branch\n    if (input.uplink_message.frm_payload === \"EQ==\") {\n        node.warn(\"Ignoring special EQ== time-sync packet\");\n        return null;\n    }\n\n    const decoded = input.uplink_message.decoded_payload || {};\n    const metadata = (input.uplink_message.rx_metadata && input.uplink_message.rx_metadata[0]) || {};\n    const settings = input.uplink_message.settings || {};\n    const lora = (settings.data_rate && settings.data_rate.lora) || {};\n\n    setIfDefined(next, \"temperature\", decoded.temperature);\n    setIfDefined(next, \"humidity\", decoded.humidity);\n    setIfDefined(next, \"co2\", decoded.co2);\n\n    setIfDefined(next, \"rssi\", metadata.rssi);\n    setIfDefined(next, \"snr\", metadata.snr);\n    setIfDefined(next, \"frequency\", settings.frequency);\n    setIfDefined(next, \"spreading_factor\", lora.spreading_factor);\n    setIfDefined(next, \"bandwidth\", lora.bandwidth);\n\n    const gw = metadata.gateway_ids || {};\n    setIfDefined(next, \"gateway_id\", gw.gateway_id);\n    setIfDefined(next, \"gateway_eui\", gw.eui);\n\n    const loc = metadata.location || {};\n    next.gateway_location = {\n        latitude: (loc.latitude !== undefined) ? loc.latitude : (prev.gateway_location && prev.gateway_location.latitude),\n        longitude: (loc.longitude !== undefined) ? loc.longitude : (prev.gateway_location && prev.gateway_location.longitude),\n    };\n\n} else if (input && (input.temperature !== undefined || input.humidity !== undefined || input.co2 !== undefined)) {\n    // Simple HTTP JSON branch\n    setIfDefined(next, \"temperature\", input.temperature);\n    setIfDefined(next, \"humidity\", input.humidity);\n    setIfDefined(next, \"co2\", input.co2);\n\n    if (!next.gateway_location && prev.gateway_location) {\n        next.gateway_location = { ...prev.gateway_location };\n    }\n} else {\n    node.warn(\"Unknown payload format – skipping.\");\n    return null;\n}\n\ncontext.set('state', next);\n\nmsg.payload = {\n    \"temperature\": next.temperature,\n    \"humidity\": next.humidity,\n    \"co2\": next.co2,\n    \"rssi\": next.rssi,\n    \"snr\": next.snr,\n    \"frequency\": next.frequency,\n    \"gateway_id\": next.gateway_id,\n    \"gateway_location\": next.gateway_location\n};\n\nmsg.headers = Object.assign({}, msg.headers, {\n    \"Content-Type\": \"application/json; charset=utf-8\"\n});\n\nnode.warn(\"Outgoing JSON to HA: \" + JSON.stringify(msg.payload));\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 460,
+        "wires": [
+            [
+                "5c5783948b27b9b0",
+                "a7e8d142c4b0212d",
+                "f9cc3c881eb257ed",
+                "dd7e5d3a269b9b34",
+                "adfe6f02f7c9f494",
+                "ab3e2bd327b91722",
+                "3855ed4470c315aa",
+                "1f04ba8a044985d4",
+                "26e8e7e06272a52d",
+                "1530a74f23a5de66"
+            ]
+        ]
+    },
+    {
+        "id": "5c5783948b27b9b0",
+        "type": "debug",
+        "z": "3232bf3ba91928b6",
+        "name": "Debug parsed payload",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "9a0e18a9d74b0b82_mqtt",
+        "type": "mqtt in",
+        "z": "3232bf3ba91928b6",
+        "name": "TTN uplinks (raw JSON, same broker)",
+        "topic": "v3/YOUR_APP_ID@ttn/devices/+/up",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "378ea1d880239fa9",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 460,
+        "wires": [
+            [
+                "db6af3d8cd89b5c5"
+            ]
+        ]
+    },
+    {
+        "id": "a7e8d142c4b0212d",
+        "type": "ha-sensor",
+        "z": "3232bf3ba91928b6",
+        "name": "Temperature",
+        "entityConfig": "4a4bf8d9a32eed39",
+        "version": 0,
+        "state": "payload.temperature",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 870,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f9cc3c881eb257ed",
+        "type": "ha-sensor",
+        "z": "3232bf3ba91928b6",
+        "name": "Humidity",
+        "entityConfig": "8f67ae04822e42f3",
+        "version": 0,
+        "state": "payload.humidity",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 860,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dd7e5d3a269b9b34",
+        "type": "ha-sensor",
+        "z": "3232bf3ba91928b6",
+        "name": "CO₂",
+        "entityConfig": "0a57b1fdae7f7672",
+        "version": 0,
+        "state": "payload.co2",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 850,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "adfe6f02f7c9f494",
+        "type": "ha-sensor",
+        "z": "3232bf3ba91928b6",
+        "name": "RSSI",
+        "entityConfig": "e8cd17819602b273",
+        "version": 0,
+        "state": "payload.rssi",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 850,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ab3e2bd327b91722",
+        "type": "ha-sensor",
+        "z": "3232bf3ba91928b6",
+        "name": "SNR",
+        "entityConfig": "3f9fcb44a3c1f812",
+        "version": 0,
+        "state": "payload.snr",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 850,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3855ed4470c315aa",
+        "type": "ha-sensor",
+        "z": "3232bf3ba91928b6",
+        "name": "Gateway latitude",
+        "entityConfig": "301e47d045bc5d47",
+        "version": 0,
+        "state": "payload.gateway_location.latitude",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 910,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1f04ba8a044985d4",
+        "type": "ha-sensor",
+        "z": "3232bf3ba91928b6",
+        "name": "Frequency",
+        "entityConfig": "350471bf1f42cc4c",
+        "version": 0,
+        "state": "payload.frequency",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 860,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "26e8e7e06272a52d",
+        "type": "ha-sensor",
+        "z": "3232bf3ba91928b6",
+        "name": "Gateway longitude",
+        "entityConfig": "d3be6dbbdee31d81",
+        "version": 0,
+        "state": "payload.gateway_location.longitude",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 920,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1530a74f23a5de66",
+        "type": "ha-sensor",
+        "z": "3232bf3ba91928b6",
+        "name": "Gateway ID",
+        "entityConfig": "7633969a071bc332",
+        "version": 0,
+        "state": "payload.gateway_id",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 860,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "378ea1d880239fa9",
+        "type": "mqtt-broker",
+        "name": "TTN MQTT (eu1.cloud.thethings.network)",
+        "broker": "eu1.cloud.thethings.network",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "4a4bf8d9a32eed39",
+        "type": "ha-entity-config",
+        "server": "a9b8122f.233f8",
+        "deviceConfig": "4166e2669e1505dd",
+        "name": "Temperature",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "sensor.lora_temperature"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:thermometer"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "°C"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "8f67ae04822e42f3",
+        "type": "ha-entity-config",
+        "server": "a9b8122f.233f8",
+        "deviceConfig": "4166e2669e1505dd",
+        "name": "Humidity",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "sensor.lora_humidity"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:water-percent"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "%"
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "0a57b1fdae7f7672",
+        "type": "ha-entity-config",
+        "server": "a9b8122f.233f8",
+        "deviceConfig": "4166e2669e1505dd",
+        "name": "CO₂",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "sensor.lora_co2"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:molecule-co2"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "ppm"
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "e8cd17819602b273",
+        "type": "ha-entity-config",
+        "server": "a9b8122f.233f8",
+        "deviceConfig": "4166e2669e1505dd",
+        "name": "RSSI",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "sensor.lora_rssi"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:rss"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "dBm"
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "3f9fcb44a3c1f812",
+        "type": "ha-entity-config",
+        "server": "a9b8122f.233f8",
+        "deviceConfig": "4166e2669e1505dd",
+        "name": "SNR",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "sensor.lora_snr"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:antenna"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "dB"
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "301e47d045bc5d47",
+        "type": "ha-entity-config",
+        "server": "a9b8122f.233f8",
+        "deviceConfig": "4166e2669e1505dd",
+        "name": "Gateway latitude",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "sensor.lora_gateway_latitude"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:map-marker-radius"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "350471bf1f42cc4c",
+        "type": "ha-entity-config",
+        "server": "a9b8122f.233f8",
+        "deviceConfig": "4166e2669e1505dd",
+        "name": "Frequency",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "sensor.lora_frequency"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:sine-wave"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "Hz"
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "d3be6dbbdee31d81",
+        "type": "ha-entity-config",
+        "server": "a9b8122f.233f8",
+        "deviceConfig": "4166e2669e1505dd",
+        "name": "Gateway longitude",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "sensor.lora_gateway_longitude"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:map-marker-radius"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "7633969a071bc332",
+        "type": "ha-entity-config",
+        "server": "a9b8122f.233f8",
+        "deviceConfig": "4166e2669e1505dd",
+        "name": "Gateway ID",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "sensor.lora_gateway_id"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:router-wireless"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "a9b8122f.233f8",
+        "type": "server",
+        "name": "Home Assistant",
+        "addon": true,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": "",
+        "connectionDelay": false,
+        "cacheJson": false,
+        "heartbeat": false,
+        "heartbeatInterval": "",
+        "statusSeparator": "",
+        "enableGlobalContextStore": false
+    },
+    {
+        "id": "4166e2669e1505dd",
+        "type": "ha-device-config",
+        "name": "LoRa CO₂ node",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "LoRa-Env-Node",
+        "swVersion": ""
+    },
+    {
+        "id": "9a7c13d7e030dc35",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-home-assistant-websocket": "0.79.4"
+        }
+    }
+]

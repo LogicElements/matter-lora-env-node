@@ -1,0 +1,4 @@
+../Core/Src/button_handler.c:20:6:ButtonHandler_Init	32	static
+../Core/Src/button_handler.c:38:6:ButtonHandler_BootCapture	8	static
+../Core/Src/button_handler.c:49:9:IsButtonReleased	8	static
+../Core/Src/button_handler.c:55:6:ButtonHandler_EXTI_Callback	8	static,ignoring_inline_asm

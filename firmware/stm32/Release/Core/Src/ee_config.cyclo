@@ -1,0 +1,2 @@
+../Core/Src/ee_config.c:51:19:EE_Config_Load	13
+../Core/Src/ee_config.c:107:19:EE_Config_Save	8

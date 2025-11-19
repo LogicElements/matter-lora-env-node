@@ -1,0 +1,13 @@
+../Core/Src/esp32c6.c:43:6:ESP_Init	1
+../Core/Src/esp32c6.c:78:9:EspC6_SendCommand	27
+../Core/Src/esp32c6.c:196:9:EspC6_Ping	1
+../Core/Src/esp32c6.c:201:9:EspC6_Status	4
+../Core/Src/esp32c6.c:213:9:EspC6_Version	1
+../Core/Src/esp32c6.c:219:9:EspC6_QR	10
+../Core/Src/esp32c6.c:244:9:EspC6_Fabrics	1
+../Core/Src/esp32c6.c:250:9:EspC6_CommStart	1
+../Core/Src/esp32c6.c:255:9:EspC6_CommStop	1
+../Core/Src/esp32c6.c:260:9:EspC6_FactoryReset	1
+../Core/Src/esp32c6.c:267:9:EspC6_DataHex	2
+../Core/Src/esp32c6.c:284:9:EspC6_DataKV	1
+../Core/Src/esp32c6.c:292:9:EspC6_DataBat	1
