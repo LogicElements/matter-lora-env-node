@@ -434,10 +434,6 @@ usable, but cluster coverage may vary between ecosystems.
   - `firmware/stm32/app/app.c` – main state machine (INIT → MEASURE → BAT_MEASURE → SEND_DATA → ...)
   - `firmware/stm32/app/GUI.c` – e-ink GUI
   - `firmware/stm32/app/conf_console.c` – UART config console
-- Make sure to configure:
-  - Correct RTC source (LSE)
-  - LPTIM2 for 10 s VOC ticks (if VOC is enabled)
-  - GPIO sleep configuration (keep pins list in `app.c`)
 
 ### ESP32-C6 firmware (Matter)
 
