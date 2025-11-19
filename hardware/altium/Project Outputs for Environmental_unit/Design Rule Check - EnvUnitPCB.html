@@ -1,0 +1,468 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html">
+<style type="text/css">
+		h1, h2, h3, h4, h5, h6 {
+			font-family : segoe ui;
+			color : black;
+			background-color : #EDE7D9;
+			padding: 0.3em;
+		}
+
+		h1 {
+			font-size: 1.2em;
+		}		
+
+		h2 {
+			font-size: 1.2em;
+		}
+
+		body {
+			font-family : segoe ui;
+		}
+
+		td, th {
+			padding: 0.5em;
+			text-align : left;
+			width: 10em;
+		}
+		th {
+			background-color : #EEEEEE;
+
+		}
+		th.column1, td.column1 {
+			text-align: left;
+			width : auto;
+		}
+		table {
+			width : 100%;
+			font-size: 0.9em;
+		}
+
+		.DRC_summary_header {
+			padding-bottom : 0.1em;
+			border : 0px solid black;
+			width: 100%;
+			align: left;
+		}
+
+		.DRC_summary_header_col1,
+		.DRC_summary_header_col2, 
+		.DRC_summary_header_col3 {
+			color : black;
+			font-size:100%;
+			padding : 0em;
+			padding-top : 0.2em;
+			padding-bottom 0.2em;
+			border : 0px solid black;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.DRC_summary_header_col1 {
+			font-weight: bold;
+			width: 9em;
+		}
+
+		.DRC_summary_header_col2 {
+			width: 0.1em;
+		
+		}
+
+		.DRC_summary_header_col3 {
+			width : auto;
+		}
+
+		.header_holder {
+		    Width = 100%;
+		    border = 0px solid green;
+		    padding = 0;
+		}
+
+
+		.front_matter, .front_matter_column1, .front_matter_column2, .front_matter_column3
+		{
+			left : 0;
+			top : 0;
+			padding: 0em;
+			padding-top : 0.1em;
+			border : 0px solid black;
+			width : 100%;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.front_matter_column1 {
+			width : 8em;
+			font-weight: bold;
+		}
+
+		.front_matter_column2 {
+			width: 0.1em;
+		}
+
+		.front_matter_column3 {
+			width : auto;
+		}
+
+		.total_column1, .total_column {
+			font-weight : bold;
+		}
+		.total_column1 {
+			text-align : left;
+		}
+		.warning, .error {
+			color : red;
+			font-weight : bold;
+		}
+		tr.onmouseout_odd {
+			background-color : #white;
+		}
+		tr.onmouseout_even { 
+			background-color : #FAFAFA;
+		}
+		tr.onmouseover_odd, tr.onmouseover_even { 
+			background-color : #EEEEEE;
+		} 
+		a:link, a:visited, .q a:link,.q a:active,.q {
+			color: #21489e; 
+		}
+		a:link.callback, a:visited.callback { 
+			color: #21489e;
+		}
+		a:link.customize, a:visited.customize {
+			color: #C0C0C0;
+			position: absolute; 
+			right: 10px;
+		}	
+		p.contents_level1 {
+			font-weight : bold;
+			font-size : 110%;
+			margin : 0.5em;
+		}
+		p.contents_level2 {
+			position : relative;
+			left : 20px;
+			margin : 0.5em;
+		}
+	</style><script type="text/javascript">
+		function coordToMils(coord) {
+			var number = coord / 10000;
+			
+			if (number != number.toFixed(3))
+				number = number.toFixed(3);
+
+			return number + 'mil'
+		}
+
+		function coordToMM(coord) {
+			var number = 0.0254 * coord / 10000;
+			
+			if (number != number.toFixed(4))
+				number = number.toFixed(4);
+			
+			return number + 'mm'
+		}
+	
+		function convertCoord(coordNode, units) {
+			for (var i = 0; i < coordNode.childNodes.length; i++) {
+				coordNode.removeChild(coordNode.childNodes[i]);
+			}
+
+			var coord = coordNode.getAttribute('value');
+			if (coord != null) {
+				if (units == 'mm') {
+					textNode = document.createTextNode(coordToMM(coord));
+					coordNode.appendChild(textNode);
+				} else if (units == 'mil') {
+					textNode = document.createTextNode(coordToMils(coord));		
+					coordNode.appendChild(textNode);	
+				}
+			}
+		}
+	
+		function convertUnits(unitNode, units) {
+			for (var i = 0; i < unitNode.childNodes.length; i++) {
+				unitNode.removeChild(unitNode.childNodes[i]);		
+			}
+		
+			textNode = document.createTextNode(units); 
+			unitNode.appendChild(textNode);
+		}
+	
+		function changeUnits(radio_input, units) {
+			if (radio_input.checked) {
+			
+				var elements = document.getElementsByName('coordinate');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertCoord(elements[i], units);
+					}
+				}
+	
+				var elements = document.getElementsByName('units');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertUnits(elements[i], units);
+					}
+				}
+			}
+		}
+	</script><title>Design Rule Verification Report</title>
+</head>
+<body onload=""><img ALT="Altium" src="
+			file://C:\Users\Public\Documents\Altium\AD22\Templates\AD_logo.png
+		"><h1>Design Rule Verification Report</h1>
+<table class="header_holder">
+<td class="column1">
+<table class="front_matter">
+<tr class="front_matter">
+<td class="front_matter_column1">Date:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">19.11.2025</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">18:37:17</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Elapsed Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">00:00:03</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Filename:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3"><a href="file:///C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc" class="file"><acronym title="C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc">C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc</acronym></a></td>
+</tr>
+</table>
+</td>
+<td class="column2">
+<table class="DRC_summary_header">
+<tr>
+<td class="DRC_summary_header_col1">Warnings:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3">0</td></tr>
+<tr>
+<td class="DRC_summary_header_col1">Rule Violations:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3" style="color : red">9</td></tr>
+<tr>
+<td class="DRC_summary_header_col1">Waived Violations:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3" style="color : red">16</td></tr>
+</table>
+</td>
+</table><a name="IDFLAEQK0E4SHJNWSSGYTDPTLFAPIEOSFRUAJJCQKUXNQOL00Y51YH"><h2>Summary</h2></a><table>
+<tr>
+<th class="column1">Warnings</th>
+<th class="column2">Count</th>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">0</td>
+</tr>
+</table><br><table>
+<tr>
+<th class="column1">Rule Violations</th>
+<th class="column2">Count</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDO5RKX2ULSTN3I2VSCKXHYWFQDPJVBSI1UZ0ZJFMK4XO1M1CCU1M">Clearance Constraint (Gap=0.1mm) (InNetClass('USB')),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDS4B4BHMNQ5FUDZGAFI1OLNEKSBKIUO1PKQZF2ZJIXKNDT4E4IHX">Clearance Constraint (Gap=0.2mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDGUDG2SS3DDQCGZKQYS5PH1FB3IFLO43WJQPK2IMNOEJ3COQR24F">Short-Circuit Constraint (Allowed=No) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDEFMQQ1DS5SCRPVVJRAHBPG4EYMZ0XSBSZBXQX5DKUAFLNGCBNEDP">Un-Routed Net Constraint ( (All) )</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#ID4JIANNARL5Y5OPLSYAZKTLECHBNFUNN4A0LTWKWPTTR5BOIYUHC">Modified Polygon (Allow modified: No), (Allow shelved: No)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#ID2NTOIT1XD4JDJGDGP0W25ZQGFHRAUIQBLQHTHAE4USYDN4PZC1PE">Width Constraint (Min=0.2mm) (Max=1mm) (Preferred=0.2mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDYJJF4X14PCMCP10RJA2E3BR5MG5T3CPAVNQUFPEV0Q2F1DFGDDMJ">Routing Topology Rule(Topology=Shortest) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDKP4D1JUUZHDOOUBZ1R5ODXH0EEBE4SWFJ4NALADGOH4YK3JVRZGP">Power Plane Connect Rule(Relief Connect )(Expansion=0.508mm) (Conductor Width=0.254mm) (Air Gap=0.254mm) (Entries=4) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDIPAAKSJSIR3DJYYT4FWEXD0QXNCF55TU3TY3MF5TGBHIZEM3KDL">Minimum Annular Ring (Minimum=0.15mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDBKDX15P5JMF0E2L14EUMAODLBBNUHWZWQ43QCLBS00P4JNBMWUVP">Minimum Annular Ring (Minimum=0.1mm) (IsVia)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#ID3KILFLQVBINQFZYMFVEYCQ1JSEO0FYJESYXFCDJDOLTU2PC3SXZ">Minimum Annular Ring (Minimum=0.15mm) (HasFootprint('PWSON-N06_2.0x2.0x0.8-0.65MM_DRV6_1') or HasFootprint('MSOP-8_PP_TI'))</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDY1D2TZS1PECPJNDJG4C3RMWDJLGBUIVX1K2WAZJSYODLBXBWEHLM">Hole Size Constraint (Min=0.2mm) (Max=5mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDWFHE33GMUPQ4KJW4CDW4CCULYKWFRVIKKESWH5MZH5P55BDD2ZGD">Hole To Hole Clearance (Gap=0.5mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDH3HCSQNBYQJAOAR5QV4GCKZB3KTGRKGLIZWC4CI0LPL5CW52PFXN">Hole To Hole Clearance (Gap=0.3mm) (HasFootprint('CON_USB-TYPEC_AMPHENOL_12401826E412A')),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDQLP4VYO5H25VKYZ3WFMV1MS4XIFFS2AIILRTV1ING40QV211G11I">Minimum Solder Mask Sliver (Gap=0.025mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#ID5O5H0NHDDQ2JNTZJLITLLT1FJLSZ54VMMYUHYMM5N1R3H4TDXLWE">Silk To Solder Mask (Clearance=0.125mm) (IsPad),(All)</a></td>
+<td class="column2">4</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDZFRTNR3NIMFWNL5EUCOBGDUONCVLOGEKE00QNNOZSKYXNWDHUWJ">Silk to Silk (Clearance=0.2mm) (All),(All)</a></td>
+<td class="column2">2</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDBJGOBKMIQJQGHCF4UUWZA4QGPHXBLM5K3AT1OP50LICM2ELGIOC">Net Antennae (Tolerance=0mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDZSFWVMRGK5O2B2SXJWMSJ4Y35DHOG5SYTJZ53EBUEXWZP3CVVMYL">Board Clearance Constraint (Gap=0mm) (InComponent('CON*') or InComponent('*FD*'))</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDFXH33A42GHGGB3WOVGFT4MVY4CDGN3J4OLSPIXFZJWJQ3QOODIXO">Board Clearance Constraint (Gap=0mm) (All)</a></td>
+<td class="column2">3</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDNGFJNOEVBLQJDN211FMP4LGCHBIXYZAVZVR3FADUHEXRG0OCZHUC">Matched Lengths(Delay Tolerance=100ps) (InDifferentialPair('USB'))</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDEC0GJTM2KTMDE5XTJ2QO5MAFS2HAWT3J2FJ3XPWPCF2HP34AJRI">Height Constraint (Min=0mm) (Max=100mm) (Prefered=12.7mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">9</td>
+</tr>
+</table><br><table>
+<tr>
+<th class="column1">Waived Violations</th>
+<th class="column2">Count</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDRO004G5KGIWMB35ZIW32M3MWUHTPPXQ4WYEJDICRPVTGFRX4X1XM">Un-Routed Net Constraint ( (All) )</a></td>
+<td class="column2">16</td>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">16</td>
+</tr>
+</table><br><a name="IDPUB1OLZFVCBJJZJVJ02TBFXLZGVITSONZN3344KYQGK42FMGLICB"><h2>Rule Violations</h2></a><a name="ID5O5H0NHDDQ2JNTZJLITLLT1FJLSZ54VMMYUHYMM5N1R3H4TDXLWE"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Silk To Solder Mask (Clearance=0.125mm) (IsPad),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6656.736mil|Location2.X=6661.017mil|Location1.Y=3628.513mil|Location2.Y=3632.793mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6656.736mil|Location2.X=6661.017mil|Location1.Y=3628.513mil|Location2.Y=3632.793mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.125mm) Between Arc (68.175mm,15.35mm) on Top Overlay And Pad C36-1(67.8mm,15.85mm) on TOP [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=7047.072mil|Location2.X=7051.353mil|Location1.Y=3428.962mil|Location2.Y=3433.243mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=7047.072mil|Location2.X=7051.353mil|Location1.Y=3428.962mil|Location2.Y=3433.243mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.125mm) Between Arc (78.05mm,10.35mm) on Top Overlay And Pad IC5-3(77.75mm,10.65mm) on TOP [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=7045.104mil|Location2.X=7049.385mil|Location1.Y=3426.993mil|Location2.Y=3431.274mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=7045.104mil|Location2.X=7049.385mil|Location1.Y=3426.993mil|Location2.Y=3431.274mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.125mm) Between Arc (78.05mm,10.35mm) on Top Overlay And Pad IC5-3(77.75mm,10.65mm) on TOP [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=7810.891mil|Location2.X=7817.062mil|Location1.Y=4000.359mil|Location2.Y=4006.53mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=7810.891mil|Location2.X=7817.062mil|Location1.Y=4000.359mil|Location2.Y=4006.53mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.025mm &lt; 0.125mm) Between Arc (97.475mm,25.1mm) on Top Overlay And Pad SB2-1(97.8mm,24.5mm) on TOP [Top Overlay] to [Top Solder] clearance [0.025mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDZFRTNR3NIMFWNL5EUCOBGDUONCVLOGEKE00QNNOZSKYXNWDHUWJ"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Silk to Silk (Clearance=0.2mm) (All),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6756.718mil|Location2.X=6762.967mil|Location1.Y=3825.616mil|Location2.Y=3831.865mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6756.718mil|Location2.X=6762.967mil|Location1.Y=3825.616mil|Location2.Y=3831.865mil|Absolute=True">Silk To Silk Clearance Constraint: (Collision &lt; 0.2mm) Between Arc (70.7mm,20.45mm) on Top Overlay And Text "RX" (70.7mm,20.5mm) on Top Overlay Silk Text to Silk Clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6756.718mil|Location2.X=6762.967mil|Location1.Y=3825.616mil|Location2.Y=3831.865mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6756.718mil|Location2.X=6762.967mil|Location1.Y=3825.616mil|Location2.Y=3831.865mil|Absolute=True">Silk To Silk Clearance Constraint: (Collision &lt; 0.2mm) Between Arc (70.7mm,20.45mm) on Top Overlay And Text "RX" (70.7mm,20.5mm) on Top Overlay Silk Text to Silk Clearance [0mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDFXH33A42GHGGB3WOVGFT4MVY4CDGN3J4OLSPIXFZJWJQ3QOODIXO"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Board Clearance Constraint (Gap=0mm) (All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6807.636mil|Location2.X=6879.073mil|Location1.Y=2961.673mil|Location2.Y=2988.919mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6807.636mil|Location2.X=6879.073mil|Location1.Y=2961.673mil|Location2.Y=2988.919mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 1mm) Between Board Edge And Track (72.26mm,-2.29mm)(72.26mm,1.575mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6988.739mil|Location2.X=7060.176mil|Location1.Y=2917.873mil|Location2.Y=2945.119mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=6988.739mil|Location2.X=7060.176mil|Location1.Y=2917.873mil|Location2.Y=2945.119mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 1mm) Between Board Edge And Track (72.26mm,-2.29mm)(81.46mm,-2.29mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=7169.841mil|Location2.X=7241.278mil|Location1.Y=2961.673mil|Location2.Y=2988.919mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=7169.841mil|Location2.X=7241.278mil|Location1.Y=2961.673mil|Location2.Y=2988.919mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 1mm) Between Board Edge And Track (81.46mm,-2.29mm)(81.46mm,1.575mm) on Top Overlay </acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDPHNMT4YFA10JJC3CRNGXWMRK1EM0IOGFJVASGFHTST1KMT5JWBND"><h2>Waived Violations</h2></a><a name="IDRO004G5KGIWMB35ZIW32M3MWUHTPPXQ4WYEJDICRPVTGFRX4X1XM"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="waived">Un-Routed Net Constraint ( (All) )</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3558.228mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3558.228mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,13.729mm)(4.45mm,13.729mm) on BOT Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3558.228mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3558.228mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,13.729mm)(4.45mm,13.729mm) on GND Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3558.228mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3558.228mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,13.729mm)(4.45mm,13.729mm) on TOP Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3558.228mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3558.228mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,13.729mm)(4.45mm,13.729mm) on VCC Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4088.583mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4088.583mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,9.9mm)(2.75mm,13.729mm) on BOT Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4088.583mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4088.583mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,9.9mm)(2.75mm,13.729mm) on GND Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4088.583mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4088.583mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,9.9mm)(2.75mm,13.729mm) on TOP Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4088.583mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4088.583mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,9.9mm)(2.75mm,13.729mm) on VCC Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3415.354mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3415.354mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,9.9mm)(4.45mm,9.9mm) on BOT Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3415.354mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3415.354mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,9.9mm)(4.45mm,9.9mm) on GND Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3415.354mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3415.354mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,9.9mm)(4.45mm,9.9mm) on TOP Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3415.354mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4080.709mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3415.354mil|Absolute=True">Un-Routed Net Constraint: Track (2.75mm,9.9mm)(4.45mm,9.9mm) on VCC Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4147.638mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4147.638mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (4.45mm,9.9mm)(4.45mm,13.729mm) on BOT Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4147.638mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4147.638mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (4.45mm,9.9mm)(4.45mm,13.729mm) on GND Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4147.638mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4147.638mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (4.45mm,9.9mm)(4.45mm,13.729mm) on TOP Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\%C5%A0kola\%C5%A0kola\Vysok%C3%A1 %C5%A1kola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4147.638mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\evzen\OneDrive\Plocha\Škola\Škola\Vysoká škola\Altium\Projects\Environmental_unit\EnvUnitPCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4147.638mil|Location2.X=4155.512mil|Location1.Y=3407.48mil|Location2.Y=3566.102mil|Absolute=True">Un-Routed Net Constraint: Track (4.45mm,9.9mm)(4.45mm,13.729mm) on VCC Dead Copper - Net Not Assigned.</acronym></a><br>Waived by Evžen Šteif at 24.07.2025 12:46:46<br>marker</td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br></body>
+</html>
