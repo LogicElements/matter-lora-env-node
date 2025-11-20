@@ -12,7 +12,7 @@ runtime from the Li-Ion + LiSOCl₂ hybrid battery pack.
 - **Single state machine** in `Core/Src/app.c` drives measurements, communications,
   GUI, sleep, user configuration, recovery paths, and sensor calibration.
 - **Sensirion sensor stack**: SCD41 (CO2), SHT41 (T/RH), SGP40 (VOC with the
-  `sensirion_gas_index_algorithm.c`), optional SDC41. All drivers live in
+  `sensirion_gas_index_algorithm.c`). All drivers live in
   `Core/Src`.
 - **Dual transport**: LoRaWAN via Seeed Wio-E5 (SPI2 + AT modem) or Matter/Thread
   using an ESP32-C6 UART bridge (`Core/Src/WioE5.c`, `Core/Src/esp32c6.c`). Offline
@@ -51,7 +51,7 @@ runtime from the Li-Ion + LiSOCl₂ hybrid battery pack.
   `Core/Src/esp32c6.c`. All commands are also exposed through the config console.
 
 ### Sensors and Power Tree
-- **SCD41, SHT41, SGP40, optional SDC41** share the PS1 rail plus I2C pull-ups
+- **SCD41, SHT41, SGP40** share the PS1 rail plus I2C pull-ups
   (PULL_CNTR). CO2 recalibration is performed inside `STATE_RECALIBRATION`.
 - **BQ25185** charger monitors USB presence (`USB_ON` pin) and charger status.
   See `Core/Src/BQ25185.c` for helper functions used by GUI and telemetry.

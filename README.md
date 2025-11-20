@@ -173,12 +173,15 @@ Current top-level layout:
 
 ```text
 .
-├─ docs/
-│  └─ images/            # Photos and screenshots used in the README
-├─ firmware/
-│  ├─ esp32c6/           # ESP-Matter (Thread) bridge
-│  └─ stm32/             # STM32U0 application, GUI, and drivers
-└─ README.md
+├── .vscode/                   # Editor tasks/snippets
+├── docs/
+│   └── images/                # Photos and screenshots used in the README
+├── firmware/
+│   ├── esp32c6/               # ESP-Matter (Thread) bridge
+│   └── stm32/                 # STM32U0 application, GUI, and drivers
+├── hardware/                  # Altium Designer sources, and PCB outputs
+├── home-assistant/            # HA dashboards, TTN/Node-RED helpers, Matter guide
+└── README.md
 ```
 
 Each firmware directory also ships with its own README that dives into the UART protocol,
