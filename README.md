@@ -426,6 +426,9 @@ support for some clusters (especially custom CO₂ cluster and power source deta
 limited on current Nest firmware. Standard temperature / humidity / air quality should be
 usable, but cluster coverage may vary between ecosystems.
 
+> **Note for Nest:** Google’s Matter guidance for Thread SED/SSED devices calls for **≤3 s sleep** to keep service parity; longer poll cycles can make the device appear offline in Google Home Graph. Home Assistant tolerates longer intervals, but if you target Nest favor the SIT ICD preset (fast/slow poll 0.5/5 s) instead of the LIT profile.
+See the ICD preset tables and interval descriptions in `firmware/esp32c6/README.md` for how to switch between SIT/LIT in `sdkconfig`.
+
 ---
 
 ## Building & flashing

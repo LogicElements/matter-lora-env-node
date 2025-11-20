@@ -53,7 +53,7 @@ This SED follows the esp-matter ICD example profiles (`examples/icd_app`) so you
 | Parameter | Value |
 | --- | --- |
 | ICD Fast Polling Interval | 500 ms |
-| ICD Slow Polling Interval | 5000 ms |
+| ICD Slow Polling Interval | 3000 ms |
 | ICD Active Mode Duration | 1000 ms |
 | ICD Idle Mode Duration | 60 s |
 | ICD Active Mode Threshold | 1000 ms |
@@ -69,6 +69,8 @@ This SED follows the esp-matter ICD example profiles (`examples/icd_app`) so you
 | ICD Active Mode Threshold | 5000 ms |
 
 Pick the preset that matches your responsiveness vs. power target, then run `idf.py set-target esp32c6` followed by `idf.py reconfigure` to apply the chosen defaults. SIT gives snappier reaction to new data at the cost of more parent polls; LIT stretches the idle window and slow poll interval for lower average current on battery.
+
+> Nest compatibility: Google wants Thread SED/SSED devices to keep sleep intervals <= 3 s to avoid being shown offline. Use the SIT preset (slow poll 3000 ms) for Nest Hub; LIT’s 20 s slow poll is too long for Google’s limits but fine for Home Assistant.
 
 What each interval does:
 - Fast Polling Interval: how often the SED asks its parent for pending data while it considers itself active (short, responsive window).
