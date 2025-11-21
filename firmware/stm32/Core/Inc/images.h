@@ -23,8 +23,10 @@ extern const unsigned char epd_bitmap_sad_basic[];
 extern const unsigned char epd_bitmap_sad_cold[];
 extern const unsigned char epd_bitmap_sad_hot[];
 
-extern const unsigned char gImage_CommOK[];
-extern const unsigned char gImage_CommNo[];
+extern const unsigned char gImage_ThreadOK[];
+extern const unsigned char gImage_ThreadNot[];
+extern const unsigned char gImage_LoraOK[];
+extern const unsigned char gImage_LoraNot[];
 
 extern const unsigned char ConfigureIcon[];
 

@@ -1,6 +1,6 @@
-../Core/Src/RTC.c:16:6:Set_RTC_From_Epoch	56	static
-../Core/Src/RTC.c:39:10:RTC_Get_Unix_Time	88	static
-../Core/Src/RTC.c:60:6:RTC_Print_DateTime	64	static
-../Core/Src/RTC.c:87:10:RTC_GetSecondsOfDay	40	static
-../Core/Src/RTC.c:101:10:RTC_GetYMD	32	static
-../Core/Src/RTC.c:112:6:RTC_UpdateTimeData	40	static
+../Core/Src/RTC.c:30:6:Set_RTC_From_Epoch	56	static
+../Core/Src/RTC.c:56:10:RTC_Get_Unix_Time	88	static
+../Core/Src/RTC.c:80:6:RTC_Print_DateTime	64	static
+../Core/Src/RTC.c:109:10:RTC_GetSecondsOfDay	40	static
+../Core/Src/RTC.c:125:10:RTC_GetYMD	32	static
+../Core/Src/RTC.c:138:6:RTC_UpdateTimeData	40	static

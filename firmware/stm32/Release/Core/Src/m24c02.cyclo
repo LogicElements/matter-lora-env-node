@@ -1,6 +1,6 @@
-../Core/Src/m24c02.c:9:6:M24C02_Init	2
-../Core/Src/m24c02.c:18:19:M24C02_IsReady	2
-../Core/Src/m24c02.c:23:19:M24C02_Read	5
-../Core/Src/m24c02.c:41:19:M24C02_Write	9
-../Core/Src/m24c02.c:76:19:M24C02_EraseAll	4
-../Core/Src/m24c02.c:96:19:M24C02_SelfTest	3
+../Core/Src/m24c02.c:43:6:M24C02_Init	2
+../Core/Src/m24c02.c:61:19:M24C02_IsReady	2
+../Core/Src/m24c02.c:78:19:M24C02_Read	5
+../Core/Src/m24c02.c:109:19:M24C02_Write	9
+../Core/Src/m24c02.c:153:19:M24C02_EraseAll	4
+../Core/Src/m24c02.c:183:19:M24C02_SelfTest	3

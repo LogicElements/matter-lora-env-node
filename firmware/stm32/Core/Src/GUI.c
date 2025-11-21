@@ -184,10 +184,21 @@ void GUI_Display(void)
     Paint_Clear(WHITE);
 
     /* Header */
-    if (app.Connected)
-        Paint_DrawBitMap_Paste(gImage_CommOK, 10, 0, 20, 20, 0);
-    else
-        Paint_DrawBitMap_Paste(gImage_CommNo, 10, 0, 20, 20, 0);
+    if(app.cfg.commsMode == COMMS_MATTER)
+    {
+    	if (app.Connected)
+    		Paint_DrawBitMap_Paste(gImage_ThreadOK, 5, 0, 40, 20, 0);
+    	else
+    		Paint_DrawBitMap_Paste(gImage_ThreadNot, 5, 0, 40, 20, 0);
+    }
+
+    if(app.cfg.commsMode == COMMS_LORA)
+    {
+    	if (app.Connected)
+    		Paint_DrawBitMap_Paste(gImage_LoraOK, 5, 0, 40, 20, 0);
+    	else
+    		Paint_DrawBitMap_Paste(gImage_LoraNot, 5, 0, 40, 20, 0);
+    }
 
     UWORD left_limit  = 10 + 20 + 4;
 
@@ -196,14 +207,14 @@ void GUI_Display(void)
     if(app.time_sync_ok)
     {
     snprintf(day_time, sizeof(day_time),
-             "%02u.%02u %02u:%02u:%02u",
+             "%02u.%02u %02u:%02u",
              g_timeData.day, g_timeData.month,
-             g_timeData.hour, g_timeData.minute, g_timeData.second);
+             g_timeData.hour, g_timeData.minute);
     DrawRightAligned(CW - MARGIN_X, HEADER_Y + 2, day_time, &Font12, WHITE, BLACK);
     }
 
     UWORD time_w = TextWidth(&Font12, day_time);
-    UWORD right_limit = 250 - 6 - time_w - 4;
+    UWORD right_limit = 250 - 6 - time_w;
 
     const char *title = "LocuSense";
     UWORD title_w = TextWidth(&Font16, title);
@@ -565,22 +576,6 @@ void EPDClear(void)
 {
     Paint_SelectImage(BlackImage);
     Paint_Clear(WHITE);
-}
-
-/**
- * @brief Draw icon (connected or not) without full screen redraw.
- *
- * Draws the LoRa/WAN connectivity icon at the top-left corner. Does not trigger
- * a display refresh by itself.
- */
-void GUI_DrawLoraIcon(uint8_t connected)
-{
-    UWORD iconX = 10;
-    UWORD iconY = 0;
-    if (connected)
-        Paint_DrawBitMap_Paste(gImage_CommOK, iconX, iconY, 20, 20, 0);
-    else
-        Paint_DrawBitMap_Paste(gImage_CommNo, iconX, iconY, 20, 20, 0);
 }
 
 /**
