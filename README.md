@@ -10,7 +10,7 @@ communication modules**:
 A 2.13" e-ink display shows current air quality and device status. It can be safely omitted in
 long-life, headless deployments where every µA matters.
 
-![LocuSense node with e-ink display](docs/images/locusense_hw.jpg)
+![LocuSense node with e-ink display](docs/images/locusense_case.jpg)
 ---
 
 
