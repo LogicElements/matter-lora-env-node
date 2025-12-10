@@ -13,6 +13,7 @@ long-life, headless deployments where every µA matters.
 ![LocuSense node with e-ink display](docs/images/locusense_case.jpg)
 ---
 
+> **Known issue (current release):** occasionally the device can hang on power-up because the e-ink driver fails to start. On a good boot the e-ink should flash black -> white; if it does not, power-cycle and try again (may require multiple attempts). This driver bug will be fixed in the next release.
 
 ## Features
 
@@ -407,12 +408,15 @@ With the ESP32-C6 module populated and `comms_mode = COMMS_MATTER`, the device a
   - CO₂ concentration cluster (0x040D, MEA)
   - Power Source info for USB, Li-Ion and LiSOCl₂
 
-Pairing workflow:
+Pairing workflow: use the quick steps below, or jump to the detailed guide.
 
-1. Enter CONFIG mode and run `ESP COMM START` **or** `ESP QR` in the console.  
-   The device prints the **QR and manual pairing code** and also draws the QR on the e-ink display.
-2. In Home Assistant, add a new **Matter** device and scan the QR code.
-3. After commissioning, all sensors appear in HA; you can then import the example dashboard.
+Quick steps (Home Assistant / Google Nest Hub):
+
+1. Enter the console by holding the button for ~5 s.
+2. If the device was paired to another fabric, check `ESP FABRICS`; recommended: run `ESP FACTORYRESET` (factory-reset the ESP32-C6, clears fabrics/commissioning info).
+3. Run `ESP COMM START`.
+4. Finish commissioning by pairing the device via the QR code in your controller.
+5. After commissioning completes, type `EXIT`.
 
 For a step-by-step walkthrough (Thread network prep, dashboards, Grafana embedding), see
 [`home-assistant/matter/README.md`](home-assistant/matter/README.md).
