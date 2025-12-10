@@ -80,7 +80,7 @@ on your side.
 
 ### Home Assistant integration
 
-- **Home Assistant Green + SkyConnect configured for Thread** (used in development)
+- **Home Assistant Green + Home Assistant Connect ZBT-1/ZBT-2 configured for Thread** (used in development)
   - LocuSense appears as a Matter device with multiple sensors and power sources
   - Ready-to-use HA dashboard configuration included
 - Data flow options:
@@ -402,7 +402,7 @@ while the TTN payload decoder lives alongside the Home Assistant YAML under [`ho
 With the ESP32-C6 module populated and `comms_mode = COMMS_MATTER`, the device acts as a
 **Matter over Thread sleepy end device**:
 
-- Tested with **Home Assistant Green + SkyConnect** (SkyConnect configured as Thread border router).
+- Tested with **Home Assistant Green + Home Assistant Connect ZBT-1/ZBT-2** (configured as Thread border router).
 - Exposes:
   - Temperature, humidity, air quality (from CO₂)
   - CO₂ concentration cluster (0x040D, MEA)

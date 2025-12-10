@@ -32,7 +32,7 @@ Prerequisites
 -------------
 - ESP-IDF with esp-matter support (v5.2 or v5.3 are known-good).
 - A serial/JTAG adapter wired to `UART1` pins and access to the WAKE/READY GPIOs.
-- A Thread border router in your test environment (Home Assistant + SkyConnect works well).
+- A Thread border router in your test environment (Home Assistant + Home Assistant Connect ZBT-1/ZBT-2 works well).
 
 Thread SED & light-sleep behavior
 ---------------------------------
