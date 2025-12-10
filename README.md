@@ -13,7 +13,7 @@ long-life, headless deployments where every µA matters.
 ![LocuSense node with e-ink display](docs/images/locusense_case.jpg)
 ---
 
-> **Known issue (current release):** occasionally the device can hang on power-up because the e-ink driver fails to start. On a good boot the e-ink should flash black -> white; if it does not, power-cycle and try again (may require multiple attempts). This driver bug will be fixed in the next release.
+> **Known issue (current release):** occasionally the device can hang on power-up because the e-ink driver fails to start. On a good boot the e-ink should flash black -> white; if it does not, remove power and re-apply (unplug USB, pull the Li-Ion jumper on the right or the Li-SOCl2 jumper on the left), then try again. This driver bug will be fixed in the next release.
 
 ## Features
 
