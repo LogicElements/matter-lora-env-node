@@ -486,6 +486,9 @@ void App_Init(void)
         if ((app.epd_link == EPD_LINK_CONNECTED) && app.usb_on)
         {
 				EPD_PowerOn();
+                if (!GUI_IsCanvasReady()) {
+                    GUI_Init();
+                }
 				GUI_UpdateState(app.currentState);
 				EPD_PowerOff();
 		}
@@ -555,6 +558,8 @@ void App_Init(void)
         /* ESP/Matter: do not start WioE5; only prepare ESP */
         PS_ON(PS_RF);
         ESP_Init();
+        HAL_Delay(200);
+        ESP_ResetPulse();
         LOGI("ESP init: PS_RF ON, READY=input PD, WAKE=LOW");
     } else if (app.cfg.commsMode == COMMS_LORA) {
         /* LoRa: start WioE5 + OTAA join */
@@ -668,6 +673,9 @@ void App_Run(void)
     /* Short GUI status (state line + VOC partials) */
     if ((app.epd_link == EPD_LINK_CONNECTED) && app.usb_on) {
         EPD_PowerOn();
+        if (!GUI_IsCanvasReady()) {
+            GUI_Init();
+        }
         GUI_UpdateState(app.currentState);
 
         if (!VOC_Active()) {
@@ -1384,11 +1392,12 @@ static void EPD_BootDetect(void)
     }
 
     PS_ON(PS_EINK);
-    HAL_Delay(100);
+    HAL_Delay(50);
     MX_SPI1_Init();
     EPD_Pins_Init();
+    HAL_Delay(50);
     DEV_Module_Init();
-    HAL_Delay(10);
+    HAL_Delay(50);
 
     if (!EPD_2in13_V4_BootDetect(1500)) {
         app.epd_link = EPD_LINK_DISCONNECTED;

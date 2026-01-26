@@ -43,7 +43,7 @@ Core/Src/GUI.o: ../Core/Src/GUI.c ../Core/Inc/GUI.h ../Core/Inc/app.h \
  ../Core/Inc/DEV_Config.h ../Core/Inc/GUI_Paint.h ../Core/Inc/fonts.h \
  ../Core/Inc/fonts.h ../Core/Inc/DEV_Config.h ../Core/Inc/WioE5.h \
  ../Core/Inc/SDC41.h ../Core/Inc/SHT41.h ../Core/Inc/RTC.h \
- ../Core/Inc/images.h ../Core/Inc/qrcodegen.h
+ ../Core/Inc/images.h ../Core/Inc/qrcodegen.h ../Core/Inc/Debug.h
 ../Core/Inc/GUI.h:
 ../Core/Inc/app.h:
 ../Core/Inc/main.h:
@@ -101,3 +101,4 @@ Core/Src/GUI.o: ../Core/Src/GUI.c ../Core/Inc/GUI.h ../Core/Inc/app.h \
 ../Core/Inc/RTC.h:
 ../Core/Inc/images.h:
 ../Core/Inc/qrcodegen.h:
+../Core/Inc/Debug.h:

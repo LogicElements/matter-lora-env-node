@@ -183,8 +183,14 @@ parameter:
 ******************************************************************************/
 void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
+    static UWORD boundary_warns = 0;
+    const UWORD origX = Xpoint;
+    const UWORD origY = Ypoint;
     if(Xpoint > Paint.Width || Ypoint > Paint.Height){
-        Debug("Exceeding display boundaries\r\n");
+        if (boundary_warns < 5) {
+            Debug("Exceeding display boundaries (in) x=%u y=%u w=%u h=%u\r\n", origX, origY, Paint.Width, Paint.Height);
+            boundary_warns++;
+        }
         return;
     }      
     UWORD X, Y;
@@ -228,7 +234,11 @@ void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
     }
 
     if(X > Paint.WidthMemory || Y > Paint.HeightMemory){
-        Debug("Exceeding display boundaries\r\n");
+        if (boundary_warns < 5) {
+            Debug("Exceeding display boundaries (out) x=%u y=%u -> X=%u Y=%u memW=%u memH=%u r=%u m=%u\r\n",
+                  origX, origY, X, Y, Paint.WidthMemory, Paint.HeightMemory, Paint.Rotate, Paint.Mirror);
+            boundary_warns++;
+        }
         return;
     }
     
@@ -570,7 +580,12 @@ void Paint_DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString,
     UWORD Ypoint = Ystart;
 
     if (Xstart > Paint.Width || Ystart > Paint.Height) {
-        Debug("Paint_DrawString_EN Input exceeds the normal display range\r\n");
+        static UBYTE warn_count = 0;
+        if (warn_count < 5) {
+            Debug("Paint_DrawString_EN Input exceeds display range (x=%u y=%u w=%u h=%u)\r\n",
+                  Xstart, Ystart, Paint.Width, Paint.Height);
+            warn_count++;
+        }
         return;
     }
 
@@ -870,7 +885,13 @@ void Paint_DrawBitMap_Paste(const unsigned char* image_buffer, UWORD xStart, UWO
                 color = (((srcImage<<(x%8) & 0x80) == 0) ? 1 : 0);
             else
                 color = (((srcImage<<(x%8) & 0x80) == 0) ? 0 : 1);
-            Paint_SetPixel(x+xStart, y+yStart, color);
+            /* Skip pixels that would land outside the logical canvas to avoid boundary spam. */
+            UWORD dstX = x + xStart;
+            UWORD dstY = y + yStart;
+            if (dstX > Paint.Width || dstY > Paint.Height) {
+                continue;
+            }
+            Paint_SetPixel(dstX, dstY, color);
         }
     }
 }

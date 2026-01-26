@@ -198,8 +198,9 @@ void EPD_Pins_Init(void)
     GPIO_InitStruct.Pin = EPD_DC_Pin;  HAL_GPIO_Init(EPD_DC_GPIO_Port, &GPIO_InitStruct);
     GPIO_InitStruct.Pin = EPD_RST_Pin; HAL_GPIO_Init(EPD_RST_GPIO_Port, &GPIO_InitStruct);
 
-    // BUSY jako vstup
+    // BUSY jako vstup (pull-up aby nezůstával plovoucí bez panelu)
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Pin  = EPD_BUSY_Pin;
     HAL_GPIO_Init(EPD_BUSY_GPIO_Port, &GPIO_InitStruct);
 

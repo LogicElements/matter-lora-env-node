@@ -14,5 +14,5 @@
 ../Core/Src/SDC41.c:34:6:SCD41_Init	8	static
 ../Core/Src/SDC41.c:350:6:SCD41_PerformFactoryReset	8	static
 ../Core/Src/SDC41.c:365:6:SCD41_ForceRecalibration	56	static
-../Core/Src/SDC41.c:444:6:SCD41_PersistSettings	8	static
-../Core/Src/SDC41.c:456:6:SCD41_PersistASCDisable	8	static
+../Core/Src/SDC41.c:447:6:SCD41_PersistSettings	8	static
+../Core/Src/SDC41.c:459:6:SCD41_PersistASCDisable	8	static

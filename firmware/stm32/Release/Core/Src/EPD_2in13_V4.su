@@ -17,4 +17,4 @@
 ../Core/Src/EPD_2in13_V4.c:304:6:EPD_2in13_V4_Display_Base	24	static
 ../Core/Src/EPD_2in13_V4.c:282:6:EPD_2in13_V4_Display_Fast	24	static
 ../Core/Src/EPD_2in13_V4.c:350:6:EPD_2in13_V4_Display_Partial	24	static
-../Core/Src/EPD_2in13_V4.c:412:5:EPD_2in13_V4_BootDetect	8	static
+../Core/Src/EPD_2in13_V4.c:412:5:EPD_2in13_V4_BootDetect	16	static

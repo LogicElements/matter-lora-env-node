@@ -436,7 +436,7 @@ static int set_kv(const char* key, const char* val) {
         s_cfg->vocMode = (VocMode_t)u8; return 1;
     }
     if (keyeq(key,"comms_mode") || keyeq(key,"comms")) {
-        if (!parse_u8(val, &u8) || u8 > COMMS_LORA) return 0;
+        if (!parse_u8(val, &u8) || u8 > COMMS_MATTER) return 0;
         s_cfg->commsMode = (CommsMode_t)u8;
         return 1;
     }

@@ -25,6 +25,7 @@ void GUI_Init(void);                         /**< Initialize e-ink, canvas and c
 void GUI_Display(void);                      /**< Full redraw of the main metrics/dashboard. */
 void GUI_UpdateState(SystemState_t state);   /**< Partial update of the bottom state line. */
 void GUI_UpdateVOCIndex(uint16_t voc_index); /**< Partial update of the VOC row with latest index. */
+uint8_t GUI_IsCanvasReady(void);             /**< Returns 1 when the GUI canvas/buffer is valid. */
 
 /* Calibration */
 void GUI_DrawCalibrationProgressFromStruct(void); /**< Partial progress bar for CO2 calibration. */

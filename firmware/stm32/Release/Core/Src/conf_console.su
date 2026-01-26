@@ -12,6 +12,6 @@
 ../Core/Src/conf_console.c:215:10:ConfConsole_LastActivityS	0	static
 ../Core/Src/conf_console.c:220:6:ConfConsole_PrintBanner	8	static
 ../Core/Src/conf_console.c:232:6:ConfConsole_PrintCfg	888	static
-../Core/Src/conf_console.c:764:6:ConfConsole_Poll	584	static,ignoring_inline_asm
-../Core/Src/conf_console.c:783:6:ConfConsole_OnRxCplt	32	static
-../Core/Src/conf_console.c:811:9:ConfConsole_ShouldExit	8	static
+../Core/Src/conf_console.c:761:6:ConfConsole_Poll	584	static,ignoring_inline_asm
+../Core/Src/conf_console.c:780:6:ConfConsole_OnRxCplt	32	static
+../Core/Src/conf_console.c:808:9:ConfConsole_ShouldExit	8	static

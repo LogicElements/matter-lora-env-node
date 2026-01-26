@@ -411,7 +411,24 @@ int EPD_ReadBusyTimeout(uint32_t timeout_ms)
    Předpoklad: napájení EPD railu je zapnuto a SPI/piny jsou inicializované. */
 int EPD_2in13_V4_BootDetect(uint32_t timeout_ms)
 {
-    EPD_2in13_V4_Reset();              /* krátký HW reset, neblokuje */
+    EPD_2in13_V4_Reset();              /* short HW reset, non-blocking */
     EPD_2in13_V4_SendCommand(0x12);    /* SWRESET */
+
+    /* Require BUSY to go HIGH at least once (panel is actively responding). */
+    uint32_t t0 = HAL_GetTick();
+    uint8_t saw_high = 0;
+    while ((HAL_GetTick() - t0) < timeout_ms) {
+        if (DEV_Digital_Read(EPD_BUSY_PIN) != 0) {
+            saw_high = 1;
+            break;
+        }
+        DEV_Delay_ms(1);
+    }
+    if (!saw_high) {
+        return 0;
+    }
+
+    /* Then wait for BUSY LOW = reset done. */
     return EPD_ReadBusyTimeout(timeout_ms);
 }
+

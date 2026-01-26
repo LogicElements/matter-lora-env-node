@@ -375,6 +375,9 @@ void SCD41_ForceRecalibration(I2C_HandleTypeDef *hi2c, uint16_t co2_reference_pp
     SCD41_SendCommand(hi2c, 0x21B1);
     HAL_Delay(1000);
 
+    if (!GUI_IsCanvasReady()) {
+        GUI_Init();
+    }
     EPDClear();
     GUI_UpdateState(app.currentState);
 
