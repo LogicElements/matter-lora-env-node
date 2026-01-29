@@ -12,6 +12,6 @@
 ../Core/Src/conf_console.c:215:10:ConfConsole_LastActivityS	1
 ../Core/Src/conf_console.c:220:6:ConfConsole_PrintBanner	1
 ../Core/Src/conf_console.c:232:6:ConfConsole_PrintCfg	8
-../Core/Src/conf_console.c:761:6:ConfConsole_Poll	143
-../Core/Src/conf_console.c:780:6:ConfConsole_OnRxCplt	9
-../Core/Src/conf_console.c:808:9:ConfConsole_ShouldExit	4
+../Core/Src/conf_console.c:743:6:ConfConsole_Poll	143
+../Core/Src/conf_console.c:762:6:ConfConsole_OnRxCplt	10
+../Core/Src/conf_console.c:796:9:ConfConsole_ShouldExit	5

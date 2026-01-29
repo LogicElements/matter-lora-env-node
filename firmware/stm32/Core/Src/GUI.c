@@ -763,8 +763,8 @@ uint8_t GUI_DrawQR_TextFull(const char* text, const char* footer)
     if (!text || !text[0]) return 0;
 
     /* 1) Encode */
-    uint8_t qrcode[qrcodegen_BUFFER_LEN_MAX];
-    uint8_t temp  [qrcodegen_BUFFER_LEN_MAX];
+    static uint8_t qrcode[qrcodegen_BUFFER_LEN_MAX];
+    static uint8_t temp  [qrcodegen_BUFFER_LEN_MAX];
     if (!qrcodegen_encodeText(text, temp, qrcode,
                               qrcodegen_Ecc_MEDIUM,
                               qrcodegen_VERSION_MIN, qrcodegen_VERSION_MAX,

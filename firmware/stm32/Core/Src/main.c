@@ -33,6 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define LSE_STARTUP_RETRY      5U
+#define LSE_STARTUP_DELAY_MS   200U
 
 /* USER CODE END PD */
 
@@ -160,7 +162,13 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  HAL_StatusTypeDef osc_ok = HAL_ERROR;
+  for (uint32_t i = 0; i < LSE_STARTUP_RETRY; ++i) {
+    osc_ok = HAL_RCC_OscConfig(&RCC_OscInitStruct);
+    if (osc_ok == HAL_OK) break;
+    HAL_Delay(LSE_STARTUP_DELAY_MS);
+  }
+  if (osc_ok != HAL_OK)
   {
     Error_Handler();
   }

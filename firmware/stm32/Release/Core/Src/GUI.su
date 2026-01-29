@@ -14,4 +14,4 @@
 ../Core/Src/GUI.c:644:6:GUI_ConfClearStatus	16	static
 ../Core/Src/GUI.c:663:6:GUI_ConfShowStatus	32	static
 ../Core/Src/GUI.c:692:6:GUI_ConfShowSetResult	96	static
-../Core/Src/GUI.c:761:9:GUI_DrawQR_TextFull	7912	static
+../Core/Src/GUI.c:761:9:GUI_DrawQR_TextFull	72	static

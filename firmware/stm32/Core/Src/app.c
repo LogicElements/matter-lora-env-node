@@ -69,6 +69,7 @@ static const PowerSwitch_t PS_EINK    = { PS4_GPIO_Port, PS4_Pin };
 #define PS_ON(ps)  HAL_GPIO_WritePin((ps).port, (ps).pin, GPIO_PIN_SET)
 #define PS_OFF(ps) HAL_GPIO_WritePin((ps).port, (ps).pin, GPIO_PIN_RESET)
 
+
 /* Pins to keep active during sleep (everything else -> Analog/High-Z) */
 static const KeepPin KEEP_PINS[] = {
     { USB_ON_GPIO_Port, USB_ON_Pin },
@@ -76,7 +77,6 @@ static const KeepPin KEEP_PINS[] = {
     { RF_TX_GPIO_Port, RF_TX_Pin },
 	{ RF_RX_GPIO_Port, RF_RX_Pin },
     { RF_RST_GPIO_Port, RF_RST_Pin },
-    { RF_GPIO1_GPIO_Port, RF_GPIO1_Pin },
 	{ RF_GPIO1_GPIO_Port, RF_GPIO1_Pin }, // ESP_WAKE pin
 	{ RF_GPIO2_GPIO_Port, RF_GPIO2_Pin }, // ESP_READY pin
     { PS2_GPIO_Port, PS2_Pin }, /* RF rail */
@@ -195,6 +195,9 @@ void App_Config_SaveToEeprom(void)
     /* Here you can control sensor power rails / pull-ups
        if the EEPROM shares power with PS_SENSORS or similar. */
 
+	PS_ON(PS_RF);
+	HAL_Delay(200);
+
     GPIO_PinState prev_pull = HAL_GPIO_ReadPin(PULL_CNTR_GPIO_Port, PULL_CNTR_Pin);
     HAL_GPIO_WritePin(PULL_CNTR_GPIO_Port, PULL_CNTR_Pin, GPIO_PIN_RESET); // enable pull-ups
     PS_ON(PS_SENSORS);
@@ -209,6 +212,8 @@ void App_Config_SaveToEeprom(void)
     } else {
         LOGE("EEPROM: save failed");
     }
+
+    if (app.cfg.commsMode == COMMS_OFFLINE) PS_OFF(PS_RF);
 }
 
 /* ======================= State prototypes ======================= */
@@ -462,7 +467,23 @@ void App_Init(void)
 {
     app.confFlag = 0;
 
-    if (app.wakeUpFlag) {
+
+    EPD_BootDetect();
+    app.usb_on = (HAL_GPIO_ReadPin(USB_ON_GPIO_Port, USB_ON_Pin) == GPIO_PIN_SET);
+
+    if (app.epd_link == EPD_LINK_CONNECTED) {
+        EPD_PowerOn();
+        HAL_Delay(500);
+        LOGI("GUI: init");
+        GUI_Init();
+        if(app.usb_on) GUI_UpdateState(app.currentState);
+        EPD_PowerOff();
+    } else {
+        LOGW("E-Ink disconnected -> skipping GUI init");
+    }
+
+
+    if (app.wakeUpFlag && app.boot_done == 1) {
         /* Re-init path after STOP2 */
         app.wakeUpFlag = 0;
         RTC_UpdateTimeData();
@@ -482,16 +503,6 @@ void App_Init(void)
         LOGB("WAKE-UP");
         LOGI("Wake-up path complete (clocks/peripherals re-initialized)");
 
-
-        if ((app.epd_link == EPD_LINK_CONNECTED) && app.usb_on)
-        {
-				EPD_PowerOn();
-                if (!GUI_IsCanvasReady()) {
-                    GUI_Init();
-                }
-				GUI_UpdateState(app.currentState);
-				EPD_PowerOff();
-		}
         return;
     }
 
@@ -517,7 +528,6 @@ void App_Init(void)
     gi.Pull = GPIO_PULLDOWN;   // or GPIO_NOPULL depending on HW
     HAL_GPIO_Init(GPIOC, &gi);
 
-    app.usb_on = (HAL_GPIO_ReadPin(USB_ON_GPIO_Port, USB_ON_Pin) == GPIO_PIN_SET);
 
     /* ---- EEPROM: load config + LoRa + ESP pairing ---- */
     if (!app.cfg_loaded) {
@@ -540,18 +550,6 @@ void App_Init(void)
 
     LOGI("Config: measure=%d voc=%d comms=%d",
          (int)app.cfg.measureMode, (int)app.cfg.vocMode, (int)app.cfg.commsMode);
-
-    EPD_BootDetect();
-
-    if (app.epd_link == EPD_LINK_CONNECTED) {
-        EPD_PowerOn();
-        LOGI("GUI: init");
-        GUI_Init();
-        if(app.usb_on) GUI_UpdateState(app.currentState);
-        EPD_PowerOff();
-    } else {
-        LOGW("E-Ink disconnected -> skipping GUI init");
-    }
 
     /* === Radio init according to comms mode === */
     if (app.cfg.commsMode == COMMS_MATTER) {
@@ -1074,6 +1072,10 @@ static void State_Sleep(void)
     HAL_GPIO_WritePin(PULL_CNTR_GPIO_Port, PULL_CNTR_Pin, GPIO_PIN_SET);
     PS_OFF(PS_SENSORS);
 
+    if (!app.usb_on) {
+        BQ25185_GPIO_Config(0);
+    }
+
     if (app.epd_link == EPD_LINK_CONNECTED) {
         EPD_PowerOff();
     }
@@ -1081,6 +1083,15 @@ static void State_Sleep(void)
     /* Internal low-power mode only for LoRa modem */
     if (app.cfg.commsMode == COMMS_LORA)
         Wio_SleepEnter();
+
+    /* Deinit UART1 and set its pins to analog to minimize leakage. */
+    HAL_UART_DeInit(&huart1);
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    GPIO_InitTypeDef gi = {0};
+    gi.Pin  = RF_TX_Pin | RF_RX_Pin;
+    gi.Mode = GPIO_MODE_ANALOG;
+    gi.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &gi);
 
     app.cfg.interval_sleep_sec = (app.cfg.interval_sleep_sec == 0U) ? 1U : app.cfg.interval_sleep_sec;
     LOGI("Entering STOP2 for %lu s", (unsigned long)app.cfg.interval_sleep_sec);
@@ -1159,6 +1170,9 @@ static void State_Config(void)
         /* --- one-time entry --- */
         LOGB("CONFIG ENTER");
 
+        PS_ON(PS_RF);
+        HAL_Delay(200);
+
         /* Stop VOC + sensors and optionally put radio back to idle */
         if (app.voc_running) {
             VOC_LPTIM_Stop();
@@ -1204,11 +1218,13 @@ static void State_Config(void)
 
         ConfConsole_Stop();
 
-        if (app.epd_link == EPD_LINK_CONNECTED) {
-            EPD_PowerOn();
-            GUI_Init();
-            EPD_PowerOff();
-        }
+//        if (app.epd_link == EPD_LINK_CONNECTED) {
+//            EPD_PowerOn();
+//            GUI_Init();
+//            EPD_PowerOff();
+//        }
+//
+//        if (app.cfg.commsMode == COMMS_OFFLINE) PS_OFF(PS_RF);
 
         /* Return to a "clean" state */
         app.boot_done      = 0;
@@ -1336,9 +1352,16 @@ static void VOC_LPTIM_Stop(void)
  * Power up E-Ink rail and SPI, initialize panel driver, and notify GUI
  * that the display has been resumed (for partial updates / cache).
  */
+static void EPD_WaitPowerStable(void)
+{
+    uint32_t delay_ms = 200;
+    HAL_Delay(delay_ms);
+}
+
 static void EPD_PowerOn(void)
 {
-    PS_ON(PS_EINK); HAL_Delay(100);
+    PS_ON(PS_EINK);
+    EPD_WaitPowerStable();
     MX_SPI1_Init();
     EPD_Pins_Init();
     DEV_Module_Init();
@@ -1391,17 +1414,27 @@ static void EPD_BootDetect(void)
         return;
     }
 
-    PS_ON(PS_EINK);
-    HAL_Delay(50);
-    MX_SPI1_Init();
-    EPD_Pins_Init();
-    HAL_Delay(50);
-    DEV_Module_Init();
-    HAL_Delay(50);
+    uint8_t ok = 0;
+    uint32_t timeout_ms = app.usb_on ? 2000U : 5000U;
 
-    if (!EPD_2in13_V4_BootDetect(1500)) {
-        app.epd_link = EPD_LINK_DISCONNECTED;
-        LOGW("E-Ink not responding -> DISCONNECTED (boot probe)");
+    for (int attempt = 0; attempt < 2 && !ok; ++attempt) {
+        PS_ON(PS_EINK);
+        EPD_WaitPowerStable();
+        MX_SPI1_Init();
+        EPD_Pins_Init();
+        HAL_Delay(20);
+        DEV_Module_Init();
+        HAL_Delay(20);
+
+        ok = EPD_2in13_V4_BootDetect(timeout_ms);
+        if (!ok) {
+            EPD_PowerOff();
+            HAL_Delay(300);
+        }
+    }
+
+    if (!ok) {
+        LOGW("E-Ink not responding during boot probe (will retry later)");
     } else {
         LOGI("E-Ink present (boot probe OK)");
     }
@@ -1460,7 +1493,6 @@ void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim)
 {
     if (hlptim->Instance != LPTIM2) return;
 
-    LOGI("LPTIM2 IRQ");
     if (app.voc_running && voc_algo_inited) {
         const uint16_t raw = app.voc_last_raw; /* 16-bit read is atomic on CM0+ */
         int32_t voc_idx32 = 0;

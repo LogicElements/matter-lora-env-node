@@ -38,6 +38,68 @@ char wio_rx_buffer[512];
 extern RTC_HandleTypeDef  hrtc;
 extern UART_HandleTypeDef huart1;
 
+/* ===== Local time helpers (CET/CEST) ===== */
+static int is_leap_year(int y)
+{
+    return ((y % 4) == 0 && (y % 100) != 0) || ((y % 400) == 0);
+}
+
+static int days_in_month(int y, int m)
+{
+    static const int mdays[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    if (m == 2) return mdays[m - 1] + (is_leap_year(y) ? 1 : 0);
+    return mdays[m - 1];
+}
+
+static int64_t days_from_civil(int y, unsigned m, unsigned d)
+{
+    y -= (m <= 2);
+    const int era = (y >= 0 ? y : y - 399) / 400;
+    const unsigned yoe = (unsigned)(y - era * 400);
+    const unsigned doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
+    const unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return (int64_t)era * 146097 + (int64_t)doe - 719468;
+}
+
+static void civil_from_days(int64_t z, int *y, unsigned *m, unsigned *d)
+{
+    z += 719468;
+    const int era = (z >= 0 ? z : z - 146096) / 146097;
+    const unsigned doe = (unsigned)(z - (int64_t)era * 146097);
+    const unsigned yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+    const int y_ = (int)yoe + era * 400;
+    const unsigned doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    const unsigned mp = (5 * doy + 2) / 153;
+    *d = doy - (153 * mp + 2) / 5 + 1;
+    *m = mp + (mp < 10 ? 3 : -9);
+    *y = y_ + (*m <= 2);
+}
+
+static int last_sunday_of_month(int y, int m)
+{
+    int last = days_in_month(y, m);
+    int64_t days = days_from_civil(y, (unsigned)m, (unsigned)last);
+    int dow = (int)((days + 4) % 7); /* 0=Sun, 1=Mon, ... (1970-01-01 was Thu=4) */
+    return last - dow;
+}
+
+static uint32_t cet_utc_offset_seconds(uint32_t epoch)
+{
+    int y;
+    unsigned m, d;
+    int64_t days = (int64_t)epoch / 86400;
+    civil_from_days(days, &y, &m, &d);
+
+    int start_day = last_sunday_of_month(y, 3);
+    int end_day   = last_sunday_of_month(y, 10);
+
+    int64_t start = days_from_civil(y, 3, (unsigned)start_day) * 86400 + 3600; /* 01:00 UTC */
+    int64_t end   = days_from_civil(y, 10, (unsigned)end_day) * 86400 + 3600;  /* 01:00 UTC */
+
+    if ((int64_t)epoch >= start && (int64_t)epoch < end) return 2U * 3600U; /* CEST */
+    return 1U * 3600U; /* CET */
+}
+
 /* ===== Global OTAA runtime config ===== */
 
 WioOtaaConfig_t g_wio = {
@@ -241,9 +303,11 @@ WioSendResult_t Wio_SendData(uint8_t *data, uint8_t length)
     char buffer[60];
     char command[80];
 
+    if ((size_t)length * 2U >= sizeof(buffer)) return WIO_SEND_ERROR;
     for (uint8_t i = 0; i < length; i++) {
         sprintf(&buffer[i * 2], "%02X", data[i]);
     }
+    buffer[length * 2] = '\0';
 
     sprintf(command, "AT+CMSGHEX=%s", buffer);
     uint8_t res = Wio_SendCommand(command, "+CMSGHEX: Done", 30000);
@@ -268,9 +332,11 @@ WioSendUnconfResult_t Wio_SendData_Unconfirmed(const uint8_t *data, uint8_t leng
     char buffer[60];
     char command[80];
 
+    if ((size_t)length * 2U >= sizeof(buffer)) return WIO_SEND_ERR;
     for (uint8_t i = 0; i < length; i++) {
         sprintf(&buffer[i * 2], "%02X", data[i]);
     }
+    buffer[length * 2] = '\0';
 
     sprintf(command, "AT+MSGHEX=%s", buffer);
     uint8_t res = Wio_SendCommand(command, "+MSGHEX: Done", 50000);
@@ -305,8 +371,8 @@ uint8_t WioTimeReq(void)
  * Expected format somewhere in uart_response:
  *   +MSGHEX: PORT:<x>; RX: "<8 hex chars>" ...
  *
- * The 8 hex chars represent a UNIX timestamp (seconds). Driver currently
- * adds +2 hours (simple DST offset) before passing to Set_RTC_From_Epoch().
+ * The 8 hex chars represent a UNIX timestamp (seconds). Driver applies
+ * CET/CEST offset before passing to Set_RTC_From_Epoch().
  *
  * @param uart_response Full text capture from modem (wio_rx_buffer).
  * @return 1 on success, 0 if pattern is not found or malformed.
@@ -325,9 +391,9 @@ uint8_t Wio_ParseTimeDownlink(const char *uart_response)
     char hex_string[9] = {0};
     strncpy(hex_string, rx_ptr, 8);
 
-    /* HEX → UNIX timestamp */
+    /* HEX -> UNIX timestamp */
     uint32_t unix_time = (uint32_t)strtoul(hex_string, NULL, 16);
-    unix_time += 2 * 3600;  /* simple +2h offset (DST) */
+    unix_time += cet_utc_offset_seconds(unix_time);
 
     Set_RTC_From_Epoch(unix_time);
 

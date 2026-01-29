@@ -552,24 +552,6 @@ static void handle_line(const char* line)
 
         uint8_t ok = 0;
 
-        /* Helper inline extractor for QR/MANUAL from esp_rx_buffer (local to this handler) */
-        auto void extract_qr_from_buffer(void) {
-            const char *pqr = strstr(esp_rx_buffer, "COMM QR ");
-            if (pqr) {
-                pqr += 8;
-                size_t n = 0;
-                while (pqr[n] && pqr[n] != '\r' && pqr[n] != '\n' && n + 1 < sizeof(g_esp.pairing.qr)) n++;
-                memcpy(g_esp.pairing.qr, pqr, n); g_esp.pairing.qr[n] = '\0';
-            }
-            const char *pmn = strstr(esp_rx_buffer, "COMM MANUAL ");
-            if (pmn) {
-                pmn += 12;
-                size_t n = 0;
-                while (pmn[n] && pmn[n] != '\r' && pmn[n] != '\n' && n + 1 < sizeof(g_esp.pairing.manual)) n++;
-                memcpy(g_esp.pairing.manual, pmn, n); g_esp.pairing.manual[n] = '\0';
-            }
-        };
-
         if      (keyeq(sub,"PING"))          ok = EspC6_Ping();
         else if (keyeq(sub,"STATUS"))        ok = EspC6_Status();
         else if (keyeq(sub,"VERSION"))       ok = EspC6_Version();
@@ -594,7 +576,7 @@ static void handle_line(const char* line)
                 ok = EspC6_CommStart();
 
                 /* 1) Try to extract QR/MANUAL from the latest response */
-                extract_qr_from_buffer();
+                EspC6_TryCacheQrFromBuffer();
 
                 /* 2) If QR is still empty, request it explicitly */
                 if (!g_esp.pairing.qr[0]) {
@@ -781,6 +763,12 @@ void ConfConsole_OnRxCplt(UART_HandleTypeDef* huart)
 {
     if (!s_active || huart != s_huart) return;
 
+    /* If a full command is pending, ignore incoming chars to avoid buffer mix-up. */
+    if (s_cmd_ready) {
+        HAL_UART_Receive_IT(s_huart, (uint8_t*)&s_rx_ch, 1);
+        return;
+    }
+
     uint8_t c = s_rx_ch;
     touch();
 
@@ -811,5 +799,7 @@ uint8_t ConfConsole_ShouldExit(void)
     if (s_wants_exit) return 1;
     if (!s_sod_now) return 0;
     uint32_t now = s_sod_now();
-    return ((now - s_last_act_s) >= s_inact_s) ? 1 : 0;
+    uint32_t diff = (now >= s_last_act_s) ? (now - s_last_act_s)
+                                          : (now + 86400U - s_last_act_s);
+    return (diff >= s_inact_s) ? 1 : 0;
 }
