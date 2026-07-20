@@ -45,14 +45,12 @@ extern void MX_ADC1_Init(void);
 extern void MX_I2C1_Init(void);
 extern void MX_SPI1_Init(void);
 extern void MX_USART4_UART_Init(void);
-extern void MX_SPI2_Init(void);
 extern void MX_USART1_UART_Init(void);
 
 extern ADC_HandleTypeDef   hadc1;
 extern I2C_HandleTypeDef   hi2c1;
 extern RTC_HandleTypeDef   hrtc;
 extern SPI_HandleTypeDef   hspi1;
-extern SPI_HandleTypeDef   hspi2;
 extern UART_HandleTypeDef  huart1;
 extern UART_HandleTypeDef  huart4;
 extern LPTIM_HandleTypeDef hlptim2;
@@ -536,7 +534,6 @@ void App_Init(void)
         HAL_UART_DeInit(&huart4); MX_USART4_UART_Init();
         HAL_UART_DeInit(&huart1); MX_USART1_UART_Init();
         HAL_SPI_DeInit(&hspi1);   MX_SPI1_Init();
-        HAL_SPI_DeInit(&hspi2);   MX_SPI2_Init();
         HAL_I2C_DeInit(&hi2c1);   MX_I2C1_Init();
         HAL_ADC_DeInit(&hadc1);   MX_ADC1_Init();
 
@@ -742,7 +739,6 @@ void App_Run(void)
         }
     } else {
         LOGW("Skipping GUI update");
-        HAL_Delay(2000);
     }
 }
 
@@ -1036,6 +1032,11 @@ static void State_TimeReq(void)
 {
     if (app.cfg.commsMode != COMMS_LORA) {
         LOGI("TIME_REQ skipped (not LoRa)");
+        return;
+    }
+
+    if (app.cfg.interval_time_req_sec == 0U) {
+        LOGI("TIME_REQ disabled");
         return;
     }
 
